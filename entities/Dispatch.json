@@ -1,0 +1,50 @@
+{
+  "name": "Dispatch",
+  "type": "object",
+  "properties": {
+    "need_id": {
+      "type": "string",
+      "description": "Reference to CommunityNeed"
+    },
+    "need_title": {
+      "type": "string"
+    },
+    "volunteer_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "volunteer_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Post-mission notes"
+    }
+  },
+  "required": [
+    "need_id",
+    "need_title"
+  ]
+}

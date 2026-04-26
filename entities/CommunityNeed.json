@@ -1,0 +1,111 @@
+{
+  "name": "CommunityNeed",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Short title of the need"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description from field report"
+    },
+    "location": {
+      "type": "string",
+      "description": "Neighborhood or area"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "food",
+        "medical",
+        "shelter",
+        "education",
+        "mental_health",
+        "elderly_care",
+        "childcare",
+        "transportation",
+        "other"
+      ],
+      "description": "Type of need"
+    },
+    "urgency_level": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "AI-assessed urgency level"
+    },
+    "urgency_score": {
+      "type": "number",
+      "description": "AI urgency score 0-100"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "unaddressed",
+        "assigned",
+        "in_progress",
+        "resolved"
+      ],
+      "default": "unaddressed"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "field_report",
+        "whatsapp",
+        "survey",
+        "verbal",
+        "other"
+      ],
+      "description": "Source of the data"
+    },
+    "raw_input": {
+      "type": "string",
+      "description": "Raw field notes or report text"
+    },
+    "beneficiaries_count": {
+      "type": "number",
+      "description": "Estimated number of people affected"
+    },
+    "assigned_volunteers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of assigned volunteers"
+    },
+    "ai_summary": {
+      "type": "string",
+      "description": "AI-generated summary and recommendation"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source_ref_type": {
+      "type": "string",
+      "description": "Reference source type for synced records"
+    },
+    "source_ref_id": {
+      "type": "string",
+      "description": "Reference source ID for synced records"
+    },
+    "reported_by_name": {
+      "type": "string",
+      "description": "Reporter display name"
+    },
+    "reported_by_phone": {
+      "type": "string",
+      "description": "Reporter phone number"
+    }
+  },
+  "required": [
+    "title",
+    "location",
+    "category"
+  ]
+}

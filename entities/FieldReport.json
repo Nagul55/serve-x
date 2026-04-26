@@ -1,0 +1,30 @@
+{
+  "name": "FieldReport",
+  "type": "object",
+  "properties": {
+    "reporter_name": {
+      "type": "string"
+    },
+    "raw_text": {
+      "type": "string",
+      "description": "Paste raw WhatsApp/field notes here"
+    },
+    "location": {
+      "type": "string"
+    },
+    "processed": {
+      "type": "boolean",
+      "default": false
+    },
+    "extracted_needs": {
+      "type": "number",
+      "default": 0
+    },
+    "ai_analysis": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "raw_text"
+  ]
+}

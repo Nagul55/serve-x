@@ -1,0 +1,74 @@
+{
+  "name": "Volunteer",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "medical",
+          "education",
+          "food_distribution",
+          "transportation",
+          "counseling",
+          "elderly_care",
+          "childcare",
+          "logistics",
+          "tech",
+          "languages",
+          "other"
+        ]
+      }
+    },
+    "availability": {
+      "type": "string",
+      "enum": [
+        "weekdays",
+        "weekends",
+        "both",
+        "on_call"
+      ],
+      "default": "weekends"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "deployed",
+        "unavailable"
+      ],
+      "default": "active"
+    },
+    "location": {
+      "type": "string",
+      "description": "Home area / neighborhood"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "total_missions": {
+      "type": "number",
+      "default": 0
+    },
+    "bio": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "full_name",
+    "email"
+  ]
+}

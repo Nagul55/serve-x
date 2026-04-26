@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Survex Coordinator Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div>
+        <h1>Survex Dashboard</h1>
+        <p>Coordinator view for WhatsApp survey intake</p>
+      </div>
+      <button id="logoutBtn" class="ghost hidden">Logout</button>
+    </header>
+
+    <section id="loginCard" class="card login-card">
+      <h2>Coordinator Login</h2>
+      <p>Use your pre-registered Survex account.</p>
+      <form id="loginForm" class="stack">
+        <label>
+          Phone (with country code)
+          <input id="phoneInput" type="text" placeholder="+919876543210" required />
+        </label>
+        <label>
+          Password
+          <input id="passwordInput" type="password" placeholder="********" required />
+        </label>
+        <button type="submit">Login</button>
+      </form>
+      <p id="loginError" class="error hidden"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="card controls">
+        <div>
+          <strong id="whoami"></strong>
+          <span id="summary" class="muted"></span>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Search location, issue, officer..." />
+          <select id="statusFilter">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <button id="refreshBtn" class="ghost">Refresh</button>
+        </div>
+      </div>
+
+      <div id="surveysContainer" class="list"></div>
+      <p id="surveysEmpty" class="muted hidden">No surveys found.</p>
+    </section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
