@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Mail, KeyRound, ArrowRight, UserRound } from 'lucide-react';
+import { Mail, KeyRound, ArrowRight, UserRound, Shield, UserCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import { servexApi } from '@/api/servexClient';
 
@@ -146,16 +147,28 @@ export default function Login({ onLoginSuccess }) {
                 <div>
                   <label className="text-sm font-medium text-black/90">Role</label>
                   <div className="mt-1.5 relative">
-                    <UserRound className="h-4 w-4 text-black/45 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="w-full pl-9 pr-3 h-10 rounded-md border border-black/25 bg-white text-black focus-visible:outline-none"
-                    >
-                      <option value="coordinator">Coordinator</option>
-                      <option value="field_officer">Field Officer</option>
-                    </select>
+                    <UserRound className="h-4 w-4 text-black/45 absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none" />
+                    <Select value={role} onValueChange={setRole}>
+                      <SelectTrigger className="pl-9 h-11 bg-gradient-to-b from-white to-slate-50 border-black/20 text-black focus:ring-black/40 rounded-xl shadow-sm">
+                        <SelectValue placeholder="Choose role" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-black/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)]">
+                        <SelectItem value="coordinator" className="rounded-lg py-2.5">
+                          <span className="inline-flex items-center gap-2">
+                            <Shield className="h-4 w-4 text-black/70" />
+                            Coordinator
+                          </span>
+                        </SelectItem>
+                        <SelectItem value="field_officer" className="rounded-lg py-2.5">
+                          <span className="inline-flex items-center gap-2">
+                            <UserCircle2 className="h-4 w-4 text-black/70" />
+                            Field Officer
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+                  <p className="text-[11px] text-black/55 mt-1.5">Pick the role linked to your OTP account.</p>
                 </div>
               ) : (
                 <div>
