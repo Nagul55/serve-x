@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { MessageCircle, ShieldCheck } from 'lucide-react';
+import { LogOut, MessageCircle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { servexApi } from '@/api/servexClient';
 
@@ -48,6 +48,24 @@ export default function FieldOfficerPanel() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleExitToLogin = async () => {
+      await servexApi.auth.logout();
+      window.location.replace('/login');
+    };
+
+    const onPopState = () => {
+      void handleExitToLogin();
+    };
+
+    window.history.pushState({ fieldOfficerPanel: true }, '', window.location.pathname);
+    window.addEventListener('popstate', onPopState);
+
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, []);
+
   const launchUrl = useMemo(() => {
     if (!accessConfig.number) return '';
     return `https://wa.me/${accessConfig.number}?text=${encodeURIComponent(accessConfig.message)}`;
@@ -55,10 +73,22 @@ export default function FieldOfficerPanel() {
 
   const providerLabel = accessConfig.provider.replace(/_/g, ' ');
 
+  const handleLogout = async () => {
+    await servexApi.auth.logout();
+    window.location.replace('/login');
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-3xl mx-auto space-y-6">
         <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+          <div className="flex items-center justify-end mb-3">
+            <Button variant="outline" className="gap-2" onClick={handleLogout}>
+              <LogOut className="w-4 h-4" />
+              Back to Login
+            </Button>
+          </div>
+
           <div className="flex items-center gap-3 mb-4">
             <ShieldCheck className="w-6 h-6 text-primary" />
             <h1 className="text-2xl md:text-3xl font-bold font-jakarta text-foreground">Field Officer Panel</h1>
