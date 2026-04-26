@@ -20,9 +20,20 @@ const navItems = [
   { path: '/field-reports', label: 'Field Reports', icon: FileText },
 ];
 
-function NotificationMenu({ notifications, unreadCount, onReadAll, onNotificationClick, formatTimeAgo }) {
+function NotificationMenu({
+  notifications,
+  unreadCount,
+  onReadAll,
+  onNotificationClick,
+  formatTimeAgo,
+  mobile = false,
+}) {
+  const menuClassName = mobile
+    ? 'absolute right-0 mt-2 w-[min(340px,calc(100vw-1rem))] rounded-xl border border-border bg-card shadow-lg z-50'
+    : 'absolute right-0 mt-2 w-[340px] max-w-[90vw] rounded-xl border border-border bg-card shadow-lg z-50';
+
   return (
-    <div className="absolute right-0 mt-2 w-[340px] max-w-[90vw] rounded-xl border border-border bg-card shadow-lg z-50">
+    <div className={menuClassName}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-border">
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4 text-muted-foreground" />
@@ -68,7 +79,7 @@ function NotificationMenu({ notifications, unreadCount, onReadAll, onNotificatio
 
 function ProfileMenu({ username, onLogout }) {
   return (
-    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-card shadow-lg p-3 z-50">
+    <div className="absolute right-0 mt-2 w-[min(224px,calc(100vw-1rem))] rounded-xl border border-border bg-card shadow-lg p-3 z-50">
       <p className="text-xs text-muted-foreground">Signed in as</p>
       <p className="text-sm font-semibold text-foreground truncate mt-0.5 mb-3">{username}</p>
       <button
@@ -190,7 +201,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden overflow-x-hidden">
       <aside className="hidden lg:flex lg:static w-64 bg-sidebar border-r border-sidebar-border flex-col">
         <div className="flex items-center px-6 py-5 border-b border-sidebar-border">
           <span className="font-jakarta text-2xl font-extrabold tracking-wide text-sidebar-foreground">
@@ -279,7 +290,7 @@ export default function Layout() {
             </div>
           </div>
 
-          <div className="lg:hidden" ref={mobileNavRef}>
+          <div className="lg:hidden relative z-20" ref={mobileNavRef}>
             <MobileCardNav
               open={mobileOpen}
               onToggle={() => setMobileOpen((v) => !v)}
@@ -291,7 +302,7 @@ export default function Layout() {
                     <button
                       type="button"
                       onClick={handleNotificationToggle}
-                      className="relative rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      className="relative inline-flex h-9 w-9 items-center justify-center rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       aria-label="Open notifications"
                     >
                       <img
@@ -312,6 +323,7 @@ export default function Layout() {
                         onReadAll={handleReadAll}
                         onNotificationClick={handleNotificationClick}
                         formatTimeAgo={formatTimeAgo}
+                        mobile
                       />
                     )}
                   </div>
@@ -320,7 +332,7 @@ export default function Layout() {
                     <button
                       type="button"
                       onClick={() => setIsProfileMenuOpen((v) => !v)}
-                      className="rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       aria-label="Open profile menu"
                     >
                       <img
@@ -340,7 +352,7 @@ export default function Layout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6">
           <Outlet />
         </main>
       </div>

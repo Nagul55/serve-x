@@ -53,7 +53,7 @@ export default function Dashboard() {
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold font-jakarta text-foreground">Command Dashboard</h1>
+        <h1 className="text-xl sm:text-2xl font-bold font-jakarta text-foreground">Command Dashboard</h1>
         <p className="text-muted-foreground text-sm mt-1">Real-time overview of community needs and volunteer coordination</p>
       </div>
 
@@ -77,7 +77,7 @@ export default function Dashboard() {
 
       {/* Active dispatches banner */}
       {activeDispatches > 0 && (
-        <div className="bg-gradient-to-r from-servex-periwinkle/30 to-servex-blush/80 border border-servex-periwinkle/70 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="bg-gradient-to-r from-servex-periwinkle/30 to-servex-blush/80 border border-servex-periwinkle/70 rounded-xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
           <Send className="w-5 h-5 text-servex-navy flex-shrink-0" />
           <div>
             <span className="font-semibold text-foreground text-sm">{activeDispatches} active dispatch{activeDispatches > 1 ? 'es' : ''}</span>
@@ -108,12 +108,12 @@ export default function Dashboard() {
               { label: 'In Progress', count: needs.filter(n => n.status === 'in_progress').length, total: needs.length, color: 'bg-servex-periwinkle' },
               { label: 'Resolved', count: resolved, total: needs.length, color: 'bg-servex-blush' },
             ].map(({ label, count, total, color }) => (
-              <div key={label} className="flex items-center gap-3">
-                <span className="text-xs sm:text-sm text-muted-foreground w-20 sm:w-24">{label}</span>
+              <div key={label} className="flex items-center gap-2 sm:gap-3">
+                <span className="text-xs sm:text-sm text-muted-foreground w-16 sm:w-24">{label}</span>
                 <div className="flex-1 h-2 bg-servex-blush/80 border border-servex-periwinkle/40 rounded-full overflow-hidden">
                   <div className={`h-full rounded-full ${color} transition-all`} style={{ width: total > 0 ? `${(count / total) * 100}%` : '0%' }} />
                 </div>
-                <span className="text-xs sm:text-sm font-medium text-foreground w-7 text-right">{count}</span>
+                <span className="text-xs sm:text-sm font-medium text-foreground w-6 sm:w-7 text-right">{count}</span>
               </div>
             ))}
           </div>
