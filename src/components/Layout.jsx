@@ -29,7 +29,7 @@ function NotificationMenu({
   mobile = false,
 }) {
   const menuClassName = mobile
-    ? 'absolute right-0 mt-2 w-[min(340px,calc(100vw-1rem))] rounded-xl border border-border bg-card shadow-lg z-50'
+    ? 'absolute right-0 mt-2 w-[min(340px,calc(100vw-3rem))] max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-card shadow-lg z-50'
     : 'absolute right-0 mt-2 w-[340px] max-w-[90vw] rounded-xl border border-border bg-card shadow-lg z-50';
 
   return (
