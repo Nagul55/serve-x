@@ -7,7 +7,7 @@ export default function VolunteerAvailability({ volunteers = [] }) {
 
   return (
     <div className="bg-card/95 rounded-xl border border-servex-periwinkle/70 p-5 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
         <h3 className="font-semibold font-jakarta text-foreground">Available Volunteers</h3>
         <Button variant="ghost" size="sm" asChild>
           <Link to="/volunteers" className="flex items-center gap-1 text-primary text-xs">

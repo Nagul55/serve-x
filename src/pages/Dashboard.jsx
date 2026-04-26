@@ -58,7 +58,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Critical Needs" value={criticalNeeds} subtitle="Require immediate action" icon={AlertTriangle} color="red" />
         <StatCard title="Unaddressed" value={unaddressed} subtitle="Needs awaiting response" icon={Clock} color="orange" />
         <StatCard title="Active Volunteers" value={activeVols} subtitle={`of ${volunteers.length} total`} icon={Users} color="blue" />
@@ -77,7 +77,7 @@ export default function Dashboard() {
 
       {/* Active dispatches banner */}
       {activeDispatches > 0 && (
-        <div className="bg-gradient-to-r from-servex-periwinkle/30 to-servex-blush/80 border border-servex-periwinkle/70 rounded-xl p-4 flex items-center gap-3">
+        <div className="bg-gradient-to-r from-servex-periwinkle/30 to-servex-blush/80 border border-servex-periwinkle/70 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
           <Send className="w-5 h-5 text-servex-navy flex-shrink-0" />
           <div>
             <span className="font-semibold text-foreground text-sm">{activeDispatches} active dispatch{activeDispatches > 1 ? 'es' : ''}</span>
@@ -109,11 +109,11 @@ export default function Dashboard() {
               { label: 'Resolved', count: resolved, total: needs.length, color: 'bg-servex-blush' },
             ].map(({ label, count, total, color }) => (
               <div key={label} className="flex items-center gap-3">
-                <span className="text-sm text-muted-foreground w-24">{label}</span>
+                <span className="text-xs sm:text-sm text-muted-foreground w-20 sm:w-24">{label}</span>
                 <div className="flex-1 h-2 bg-servex-blush/80 border border-servex-periwinkle/40 rounded-full overflow-hidden">
                   <div className={`h-full rounded-full ${color} transition-all`} style={{ width: total > 0 ? `${(count / total) * 100}%` : '0%' }} />
                 </div>
-                <span className="text-sm font-medium text-foreground w-6 text-right">{count}</span>
+                <span className="text-xs sm:text-sm font-medium text-foreground w-7 text-right">{count}</span>
               </div>
             ))}
           </div>

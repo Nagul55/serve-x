@@ -41,13 +41,13 @@ export default function Dispatch() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold font-jakarta text-foreground">Dispatch Log</h1>
           <p className="text-muted-foreground text-sm mt-1">{dispatches.filter(d => d.status === 'active').length} active deployments</p>
         </div>
         <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             {['pending', 'active', 'completed', 'resolved', 'cancelled'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -71,7 +71,7 @@ export default function Dispatch() {
             const st = statusConfig[dispatch.status] || statusConfig.pending;
             return (
               <div key={dispatch.id} className="bg-card border border-border rounded-xl p-5 hover:shadow-sm transition-shadow">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <h4 className="font-semibold text-foreground">{dispatch.need_title}</h4>
@@ -95,19 +95,19 @@ export default function Dispatch() {
                       <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{dispatch.notes}</p>
                     )}
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                     {dispatch.status === 'active' && (
                       <>
-                        <Button size="sm" variant="outline" onClick={() => updateStatus(dispatch, 'completed')} className="gap-1.5 text-primary border-primary/30 hover:bg-servex-blush">
+                        <Button size="sm" variant="outline" onClick={() => updateStatus(dispatch, 'completed')} className="gap-1.5 text-primary border-primary/30 hover:bg-servex-blush w-full sm:w-auto">
                           <CheckCircle className="w-3.5 h-3.5" /> Complete
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => updateStatus(dispatch, 'cancelled')} className="text-muted-foreground">
+                        <Button size="sm" variant="ghost" onClick={() => updateStatus(dispatch, 'cancelled')} className="text-muted-foreground w-full sm:w-auto">
                           <X className="w-3.5 h-3.5" />
                         </Button>
                       </>
                     )}
                     {dispatch.status === 'pending' && (
-                      <Button size="sm" onClick={() => updateStatus(dispatch, 'active')} className="gap-1.5">
+                      <Button size="sm" onClick={() => updateStatus(dispatch, 'active')} className="gap-1.5 w-full sm:w-auto">
                         <Send className="w-3.5 h-3.5" /> Activate
                       </Button>
                     )}

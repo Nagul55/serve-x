@@ -90,12 +90,12 @@ For each distinct need identified, provide structured data. Return JSON.`,
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold font-jakarta text-foreground">Field Reports</h1>
           <p className="text-muted-foreground text-sm mt-1">Paste raw field notes - AI extracts structured needs automatically</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="gap-2">
+        <Button onClick={() => setShowForm(true)} className="gap-2 w-full sm:w-auto">
           <Plus className="w-4 h-4" /> New Report
         </Button>
       </div>
@@ -114,7 +114,7 @@ For each distinct need identified, provide structured data. Return JSON.`,
         <div className="space-y-4">
           {reports.map(report => (
             <div key={report.id} className="bg-card border border-border rounded-xl p-5">
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     {report.reporter_name && <span className="font-semibold text-foreground text-sm">{report.reporter_name}</span>}
@@ -138,20 +138,20 @@ For each distinct need identified, provide structured data. Return JSON.`,
                     </div>
                   )}
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
+                <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                   {!report.processed && (
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => processReport(report)}
                       disabled={processing === report.id}
-                      className="gap-1.5 text-primary border-primary/30"
+                      className="gap-1.5 text-primary border-primary/30 w-full sm:w-auto"
                     >
                       {processing === report.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                       Extract Needs
                     </Button>
                   )}
-                  <Button size="sm" variant="ghost" onClick={() => handleDelete(report.id)} className="text-muted-foreground hover:text-destructive">
+                  <Button size="sm" variant="ghost" onClick={() => handleDelete(report.id)} className="text-muted-foreground hover:text-destructive w-full sm:w-auto">
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                 </div>
@@ -162,12 +162,12 @@ For each distinct need identified, provide structured data. Return JSON.`,
       )}
 
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg w-[calc(100%-1rem)] sm:w-full p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="font-jakarta">New Field Report</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Label>Reporter Name</Label>
                 <Input className="mt-1" value={form.reporter_name} onChange={e => setForm(f => ({ ...f, reporter_name: e.target.value }))} placeholder="Field agent name" />
@@ -187,7 +187,7 @@ For each distinct need identified, provide structured data. Return JSON.`,
               />
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
             <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
             <Button onClick={handleSubmit} disabled={saving || !form.raw_text}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

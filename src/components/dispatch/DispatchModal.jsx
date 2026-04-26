@@ -213,7 +213,7 @@ Return a JSON array of recommended volunteer IDs (strings).`,
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg w-[calc(100%-1rem)] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="font-jakarta">Dispatch Volunteers</DialogTitle>
         </DialogHeader>
@@ -227,7 +227,7 @@ Return a JSON array of recommended volunteer IDs (strings).`,
         )}
 
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <Label>Select Volunteers ({selected.length} selected)</Label>
             <Button variant="outline" size="sm" onClick={getAISuggestions} disabled={loadingAI} className="gap-2 text-primary border-primary/30 text-xs">
               {loadingAI ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
@@ -274,7 +274,7 @@ Return a JSON array of recommended volunteer IDs (strings).`,
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleDispatch} disabled={saving || selected.length === 0}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

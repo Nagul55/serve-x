@@ -54,13 +54,13 @@ export default function VolunteerFormModal({ open, onClose, onSaved, initial = n
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-xl w-[calc(100%-1rem)] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="font-jakarta">{initial ? 'Edit Volunteer' : 'Add Volunteer'}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label>Full Name *</Label>
               <Input className="mt-1" value={form.full_name} onChange={e => set('full_name', e.target.value)} placeholder="Volunteer name" />
@@ -95,22 +95,22 @@ export default function VolunteerFormModal({ open, onClose, onSaved, initial = n
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <Label>Skills (comma separated)</Label>
               <Input className="mt-1" value={skillsText} onChange={e => setSkillsText(e.target.value)} placeholder="medical, transportation, logistics" />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <Label>Languages (comma separated)</Label>
               <Input className="mt-1" value={languagesText} onChange={e => setLanguagesText(e.target.value)} placeholder="English, Hindi, Tamil" />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <Label>Bio</Label>
               <Textarea className="mt-1" value={form.bio || ''} onChange={e => set('bio', e.target.value)} placeholder="Background and strengths..." />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleSave} disabled={saving || !form.full_name || !form.email}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

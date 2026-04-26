@@ -79,11 +79,11 @@ export default function FieldOfficerPanel() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10">
+    <div className="min-h-screen bg-background p-4 sm:p-6 md:p-10">
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-8 shadow-sm">
           <div className="flex items-center justify-end mb-3">
-            <Button variant="outline" className="gap-2" onClick={handleLogout}>
+            <Button variant="outline" className="gap-2 w-full sm:w-auto" onClick={handleLogout}>
               <LogOut className="w-4 h-4" />
               Back to Login
             </Button>
@@ -98,7 +98,7 @@ export default function FieldOfficerPanel() {
           </p>
 
           <a href={launchUrl || '#'} target="_blank" rel="noreferrer">
-            <Button className="gap-2 text-base px-6 py-6" disabled={!launchUrl}>
+            <Button className="gap-2 text-base px-6 py-6 w-full sm:w-auto" disabled={!launchUrl}>
               <MessageCircle className="w-5 h-5" />
               Talk to ServeX AI
             </Button>

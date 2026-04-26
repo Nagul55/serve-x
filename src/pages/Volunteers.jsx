@@ -112,25 +112,25 @@ export default function Volunteers() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold font-jakarta text-foreground">Volunteers</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {activeCount} available - {deployedCount} deployed - {volunteers.length} total
           </p>
         </div>
-        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2">
+        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2 w-full sm:w-auto">
           <Plus className="w-4 h-4" /> Add Volunteer
         </Button>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-48">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+        <div className="relative w-full sm:flex-1 sm:min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input className="pl-9" placeholder="Search volunteers..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             {['active', 'deployed', 'unavailable'].map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -218,7 +218,7 @@ export default function Volunteers() {
       )}
 
       <Dialog open={assignmentModalOpen} onOpenChange={(nextOpen) => { if (!nextOpen) closeAssignmentModal(); }}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-xl w-[calc(100%-1rem)] sm:w-full p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="font-jakarta">Assign Volunteer Work via Chatbot</DialogTitle>
           </DialogHeader>
@@ -285,7 +285,7 @@ export default function Volunteers() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
             <Button variant="outline" onClick={closeAssignmentModal} disabled={assigning}>Cancel</Button>
             <Button onClick={submitAssignment} disabled={assigning || !assignmentTask.trim()}>
               {assigning ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

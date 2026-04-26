@@ -38,7 +38,7 @@ export default function InteractiveMap({ needs, onSelectNeed }) {
     : defaultCenter;
 
   return (
-    <div className="h-[400px] w-full rounded-xl border border-servex-periwinkle/70 overflow-hidden shadow-sm relative z-0">
+    <div className="h-[320px] sm:h-[400px] w-full rounded-xl border border-servex-periwinkle/70 overflow-hidden shadow-sm relative z-0">
       <MapContainer 
         center={center} 
         zoom={activeNeeds.length > 0 ? 10 : 7} 

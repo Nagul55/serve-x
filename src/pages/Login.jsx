@@ -105,17 +105,17 @@ export default function Login({ onLoginSuccess }) {
       <div className="absolute -top-20 -left-24 h-72 w-72 rounded-full border border-black/10" />
       <div className="absolute -bottom-20 right-0 h-72 w-72 rounded-full border border-black/10" />
 
-      <div className="relative min-h-screen grid place-items-center p-6">
+      <div className="relative min-h-screen grid place-items-center p-4 sm:p-6">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
-          <div className="flex flex-col items-start justify-center gap-0 lg:pr-4">
-            <div className="w-56 h-52 md:w-72 md:h-64 overflow-hidden">
+          <div className="flex flex-col items-center lg:items-start justify-center gap-0 lg:pr-4">
+            <div className="w-44 h-40 sm:w-56 sm:h-52 md:w-72 md:h-64 overflow-hidden">
               <img
                 src={LOGIN_LOGO}
                 alt="ServeX"
                 className="w-full h-full object-cover object-center scale-[1.55]"
               />
             </div>
-            <h1 className="mt-1 text-4xl md:text-5xl font-extrabold font-jakarta leading-tight tracking-tight">
+            <h1 className="mt-1 text-3xl sm:text-4xl md:text-5xl font-extrabold font-jakarta leading-tight tracking-tight text-center lg:text-left">
               Sign In to
               <span className="block text-black/70">ServeX Dashboard</span>
             </h1>

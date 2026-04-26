@@ -19,7 +19,7 @@ export default function NeedsPriorityList({ needs = [], highlightedId = null }) 
 
   return (
     <div className="bg-card/95 rounded-xl border border-servex-periwinkle/70 p-5 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
         <h3 className="font-semibold font-jakarta text-foreground text-lg">Top Priority Needs</h3>
         <Button variant="ghost" size="sm" asChild>
           <Link to="/needs" className="flex items-center gap-1 text-primary text-xs font-bold">
@@ -56,7 +56,7 @@ export default function NeedsPriorityList({ needs = [], highlightedId = null }) 
                     <span className="text-sm font-medium text-foreground truncate">{need.title}</span>
                     <Badge variant="outline" className={`text-xs ${urg.className}`}>{urg.label}</Badge>
                   </div>
-                  <div className="flex items-center gap-3 mt-1">
+                  <div className="flex flex-wrap items-center gap-3 mt-1">
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
                       <MapPin className="w-3 h-3" /> {need.location}
                     </span>

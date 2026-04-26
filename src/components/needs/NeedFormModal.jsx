@@ -71,7 +71,7 @@ Return JSON with: title (short), urgency_level (critical/high/medium/low), urgen
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl w-[calc(100%-1rem)] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="font-jakarta">{initial ? 'Edit Need' : 'Log Community Need'}</DialogTitle>
         </DialogHeader>
@@ -104,8 +104,8 @@ Return JSON with: title (short), urgency_level (critical/high/medium/low), urgen
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
               <Label>Title *</Label>
               <Input className="mt-1" value={form.title} onChange={e => set('title', e.target.value)} placeholder="Short description of the need" />
             </div>
@@ -153,14 +153,14 @@ Return JSON with: title (short), urgency_level (critical/high/medium/low), urgen
                 </SelectContent>
               </Select>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <Label>Description</Label>
               <Textarea className="mt-1" value={form.description} onChange={e => set('description', e.target.value)} placeholder="Additional details..." />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleSave} disabled={saving || !form.title || !form.location}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}

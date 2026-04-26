@@ -53,31 +53,31 @@ export default function Needs() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold font-jakarta text-foreground">Community Needs</h1>
           <p className="text-muted-foreground text-sm mt-1">{needs.length} total needs tracked</p>
         </div>
-        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2">
+        <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2 w-full sm:w-auto">
           <Plus className="w-4 h-4" /> Log Need
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-48">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3">
+        <div className="relative w-full sm:flex-1 sm:min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input className="pl-9" placeholder="Search by title or location..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <Select value={filterUrgency} onValueChange={setFilterUrgency}>
-          <SelectTrigger className="w-36"><SelectValue placeholder="Urgency" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Urgency" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Urgency</SelectItem>
             {['critical', 'high', 'medium', 'low'].map(u => <SelectItem key={u} value={u}>{u}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={filterStatus} onValueChange={setFilterStatus}>
-          <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="Status" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Status</SelectItem>
             {['unaddressed', 'assigned', 'in_progress', 'resolved'].map(s => <SelectItem key={s} value={s}>{s.replace(/_/g, ' ')}</SelectItem>)}
@@ -107,7 +107,7 @@ export default function Needs() {
       {/* Detail modal */}
       {detailNeed && (
         <Dialog open={!!detailNeed} onOpenChange={() => setDetailNeed(null)}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg w-[calc(100%-1rem)] sm:w-full p-4 sm:p-6">
             <DialogHeader>
               <DialogTitle className="font-jakarta">{detailNeed.title}</DialogTitle>
             </DialogHeader>
@@ -122,7 +122,7 @@ export default function Needs() {
             )}
             <div className="space-y-3 text-sm">
               {(detailNeed.source === 'survey' || detailNeed.source_ref_type === 'survex_survey') && (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div className="rounded-lg border border-border bg-secondary/30 p-3">
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <UserRound className="w-3.5 h-3.5" /> Field Officer
@@ -142,7 +142,7 @@ export default function Needs() {
                   </div>
                 </div>
               )}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div><span className="text-muted-foreground">Location:</span> <span className="font-medium">{detailNeed.location}</span></div>
                 <div><span className="text-muted-foreground">Urgency:</span> <span className="font-medium capitalize">{detailNeed.urgency_level}</span></div>
                 <div><span className="text-muted-foreground">Category:</span> <span className="font-medium">{detailNeed.category?.replace(/_/g, ' ')}</span></div>
@@ -165,7 +165,7 @@ export default function Needs() {
                 return (
                   <div className="rounded-lg border border-border p-3">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Survey Responses</p>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                       <div><span className="text-muted-foreground">Need:</span> <span className="font-medium">{survey.need_type || '-'}</span></div>
                       <div><span className="text-muted-foreground">Days:</span> <span className="font-medium">{survey.days_of_issue || '-'}</span></div>
                       <div><span className="text-muted-foreground">Groups:</span> <span className="font-medium">{survey.vulnerable_groups || '-'}</span></div>
@@ -175,11 +175,11 @@ export default function Needs() {
                 );
               })()}
             </div>
-            <div className="flex justify-between pt-2">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-2 pt-2">
               <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(detailNeed.id)}>
                 <Trash2 className="w-4 h-4 mr-1" /> Delete
               </Button>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Button variant="outline" size="sm" onClick={() => { setEditing(detailNeed); setDetailNeed(null); setShowForm(true); }}>Edit</Button>
                 <Button size="sm" onClick={() => { setDispatching(detailNeed); setDetailNeed(null); }}>Dispatch</Button>
               </div>
