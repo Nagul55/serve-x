@@ -771,6 +771,7 @@ export async function continueSurveyConversation({
 }) {
   const sanitizedInbound = sanitizeText(inboundText, 1200);
   const normalizedCmd = normalizeCommand(sanitizedInbound);
+  const normalizedMessageSid = sanitizeText(messageSid, 200);
 
   // ── Handle global commands ───────────────────────────────────────────
   if (HELP_COMMANDS.has(normalizedCmd)) {
@@ -790,6 +791,37 @@ export async function continueSurveyConversation({
     fieldOfficerId: fieldOfficer.id,
     status: 'active',
   });
+
+  // Guard against webhook retries: ignore the same inbound message ID for the active conversation.
+  if (conversation && normalizedMessageSid && normalizedMessageSid === conversation.lastInboundMessageSid) {
+    return {
+      type: 'duplicate',
+      skipReply: true,
+      message: '',
+      conversation,
+    };
+  }
+
+  // Guard against repeated "start survey" triggers arriving shortly after the same command.
+  // This commonly happens when providers retry webhook delivery.
+  const recentlyRepeatedStartCommand = Boolean(
+    conversation
+    && START_COMMANDS.has(normalizedCmd)
+    && normalizedCmd !== 'start'
+    && !isYesCommand(normalizedCmd)
+    && normalizeCommand(conversation.lastInboundMessage || '') === normalizedCmd
+    && conversation.lastMessageAt
+    && (Date.now() - new Date(conversation.lastMessageAt).getTime()) < 5 * 60 * 1000
+  );
+
+  if (recentlyRepeatedStartCommand) {
+    return {
+      type: 'duplicate',
+      skipReply: true,
+      message: '',
+      conversation,
+    };
+  }
 
   if (!conversation) {
     if (START_COMMANDS.has(normalizedCmd) || isYesCommand(normalizedCmd) || normalizedCmd.includes('survey')) {
@@ -811,16 +843,6 @@ export async function continueSurveyConversation({
       inboundText: sanitizedInbound,
       messageSid,
     });
-  }
-
-  const normalizedMessageSid = sanitizeText(messageSid, 200);
-  if (normalizedMessageSid && normalizedMessageSid === conversation.lastInboundMessageSid) {
-    return {
-      type: 'duplicate',
-      skipReply: true,
-      message: '',
-      conversation,
-    };
   }
 
   const responses = conversation.responses || {};
