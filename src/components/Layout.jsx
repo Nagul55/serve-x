@@ -27,13 +27,14 @@ function NotificationMenu({
   onNotificationClick,
   formatTimeAgo,
   mobile = false,
+  mobileStyle = null,
 }) {
   const menuClassName = mobile
-    ? 'absolute right-0 mt-2 w-[min(340px,calc(100vw-3rem))] max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-card shadow-lg z-50'
+    ? 'fixed rounded-xl border border-border bg-card shadow-lg z-[70]'
     : 'absolute right-0 mt-2 w-[340px] max-w-[90vw] rounded-xl border border-border bg-card shadow-lg z-50';
 
   return (
-    <div className={menuClassName}>
+    <div className={menuClassName} style={mobile ? mobileStyle : undefined}>
       <div className="flex items-center justify-between px-3 py-2 border-b border-border">
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4 text-muted-foreground" />
@@ -102,11 +103,13 @@ export default function Layout() {
   const [profileGifCycle, setProfileGifCycle] = useState(0);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationMenuOpen, setIsNotificationMenuOpen] = useState(false);
+  const [mobileNotificationMenuStyle, setMobileNotificationMenuStyle] = useState(null);
   const [username, setUsername] = useState('Coordinator');
   const profileMenuDesktopRef = useRef(null);
   const profileMenuMobileRef = useRef(null);
   const notificationMenuDesktopRef = useRef(null);
   const notificationMenuMobileRef = useRef(null);
+  const notificationMobileButtonRef = useRef(null);
   const mobileNavRef = useRef(null);
 
   const { data: notificationPayload } = useQuery({
@@ -181,12 +184,52 @@ export default function Layout() {
     setIsProfileMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!isNotificationMenuOpen) return;
+
+    const updateMobileNotificationPosition = () => {
+      if (window.innerWidth >= 1024 || !notificationMobileButtonRef.current) {
+        setMobileNotificationMenuStyle(null);
+        return;
+      }
+
+      const rect = notificationMobileButtonRef.current.getBoundingClientRect();
+      const horizontalPadding = 8;
+      const desiredWidth = Math.min(340, window.innerWidth - (horizontalPadding * 2));
+      const left = Math.max(horizontalPadding, Math.min(
+        rect.right - desiredWidth,
+        window.innerWidth - desiredWidth - horizontalPadding
+      ));
+      const top = rect.bottom + 8;
+
+      setMobileNotificationMenuStyle({
+        width: `${desiredWidth}px`,
+        left: `${left}px`,
+        top: `${top}px`,
+      });
+    };
+
+    updateMobileNotificationPosition();
+    window.addEventListener('resize', updateMobileNotificationPosition);
+    window.addEventListener('scroll', updateMobileNotificationPosition, true);
+    return () => {
+      window.removeEventListener('resize', updateMobileNotificationPosition);
+      window.removeEventListener('scroll', updateMobileNotificationPosition, true);
+    };
+  }, [isNotificationMenuOpen]);
+
   const handleLogout = async () => {
     await logout(true);
   };
 
   const handleNotificationToggle = () => {
-    setIsNotificationMenuOpen((v) => !v);
+    setIsNotificationMenuOpen((v) => {
+      const next = !v;
+      if (!next) {
+        setMobileNotificationMenuStyle(null);
+      }
+      return next;
+    });
   };
 
   const handleNotificationClick = async (id, isRead) => {
@@ -300,6 +343,7 @@ export default function Layout() {
                 <>
                   <div ref={notificationMenuMobileRef} className="relative">
                     <button
+                      ref={notificationMobileButtonRef}
                       type="button"
                       onClick={handleNotificationToggle}
                       className="relative inline-flex h-9 w-9 items-center justify-center rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -324,6 +368,7 @@ export default function Layout() {
                         onNotificationClick={handleNotificationClick}
                         formatTimeAgo={formatTimeAgo}
                         mobile
+                        mobileStyle={mobileNotificationMenuStyle}
                       />
                     )}
                   </div>
