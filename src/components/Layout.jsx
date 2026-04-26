@@ -279,64 +279,63 @@ export default function Layout() {
             </div>
           </div>
 
-          <div className="lg:hidden space-y-3" ref={mobileNavRef}>
-            <div className="flex items-center justify-end relative">
-              <div className="flex items-center gap-2">
-                <div ref={notificationMenuMobileRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={handleNotificationToggle}
-                    className="relative rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    aria-label="Open notifications"
-                  >
-                    <img
-                      src={HEADER_NOTIFICATION_GIF}
-                      alt="Notifications"
-                      className="w-7 h-7 object-contain"
-                    />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] leading-[18px] font-semibold text-center">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </button>
-                  {isNotificationMenuOpen && (
-                    <NotificationMenu
-                      notifications={notifications}
-                      unreadCount={unreadCount}
-                      onReadAll={handleReadAll}
-                      onNotificationClick={handleNotificationClick}
-                      formatTimeAgo={formatTimeAgo}
-                    />
-                  )}
-                </div>
-
-                <div ref={profileMenuMobileRef} className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setIsProfileMenuOpen((v) => !v)}
-                    className="rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    aria-label="Open profile menu"
-                  >
-                    <img
-                      key={profileGifCycle}
-                      src={HEADER_PROFILE_GIF}
-                      alt="Current user"
-                      className="w-7 h-7 object-contain"
-                    />
-                  </button>
-                  {isProfileMenuOpen && (
-                    <ProfileMenu username={username} onLogout={handleLogout} />
-                  )}
-                </div>
-              </div>
-            </div>
-
+          <div className="lg:hidden" ref={mobileNavRef}>
             <MobileCardNav
               open={mobileOpen}
               onToggle={() => setMobileOpen((v) => !v)}
               onNavigate={() => setMobileOpen(false)}
               onLogout={handleLogout}
+              headerActions={(
+                <>
+                  <div ref={notificationMenuMobileRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={handleNotificationToggle}
+                      className="relative rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      aria-label="Open notifications"
+                    >
+                      <img
+                        src={HEADER_NOTIFICATION_GIF}
+                        alt="Notifications"
+                        className="w-7 h-7 object-contain"
+                      />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] leading-[18px] font-semibold text-center">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </button>
+                    {isNotificationMenuOpen && (
+                      <NotificationMenu
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                        onReadAll={handleReadAll}
+                        onNotificationClick={handleNotificationClick}
+                        formatTimeAgo={formatTimeAgo}
+                      />
+                    )}
+                  </div>
+
+                  <div ref={profileMenuMobileRef} className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsProfileMenuOpen((v) => !v)}
+                      className="rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      aria-label="Open profile menu"
+                    >
+                      <img
+                        key={profileGifCycle}
+                        src={HEADER_PROFILE_GIF}
+                        alt="Current user"
+                        className="w-7 h-7 object-contain"
+                      />
+                    </button>
+                    {isProfileMenuOpen && (
+                      <ProfileMenu username={username} onLogout={handleLogout} />
+                    )}
+                  </div>
+                </>
+              )}
             />
           </div>
         </header>

@@ -7,7 +7,7 @@
   border-radius: 0.75rem;
   background-color: hsl(var(--card));
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .mobile-card-nav-top {
@@ -23,6 +23,12 @@
   font-weight: 800;
   letter-spacing: 0;
   color: hsl(var(--foreground));
+}
+
+.mobile-card-nav-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .mobile-hamburger-menu {

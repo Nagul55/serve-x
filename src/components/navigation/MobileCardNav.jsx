@@ -36,21 +36,25 @@ export default function MobileCardNav({
   onToggle,
   onNavigate,
   onLogout,
+  headerActions = null,
 }) {
   return (
     <div className="mobile-card-nav-container lg:hidden">
       <nav className={`mobile-card-nav ${open ? 'open' : ''}`}>
         <div className="mobile-card-nav-top">
           <span className="mobile-card-nav-logo">ServeX</span>
-          <button
-            type="button"
-            className={`mobile-hamburger-menu ${open ? 'open' : ''}`}
-            onClick={onToggle}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-          >
-            <span className="mobile-hamburger-line" />
-            <span className="mobile-hamburger-line" />
-          </button>
+          <div className="mobile-card-nav-controls">
+            {headerActions}
+            <button
+              type="button"
+              className={`mobile-hamburger-menu ${open ? 'open' : ''}`}
+              onClick={onToggle}
+              aria-label={open ? 'Close menu' : 'Open menu'}
+            >
+              <span className="mobile-hamburger-line" />
+              <span className="mobile-hamburger-line" />
+            </button>
+          </div>
         </div>
 
         <div className="mobile-card-nav-content" aria-hidden={!open}>
