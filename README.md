@@ -42,7 +42,7 @@ Field Officer / Reporter
 | Database | MongoDB + Mongoose |
 | Authentication | JWT + Email/Password |
 | WhatsApp Intake | Meta WhatsApp Cloud API + Survex module |
-| AI Engine | OpenAI / NVIDIA DeepSeek integration hooks |
+| AI Engine | GeminiAI / NVIDIA DeepSeek integration hooks |
 | Maps / Geo | Leaflet + OpenStreetMap |
 | Hosting Ready | Vercel/Netlify frontend + Node host backend |
 
