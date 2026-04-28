@@ -66,8 +66,6 @@ export default function Login({ onLoginSuccess }) {
   return (
     <div className="min-h-screen relative overflow-hidden bg-white text-black">
       <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.06),transparent_28%,rgba(0,0,0,0.08)_68%,transparent)]" />
-      <div className="absolute -top-20 -left-24 h-72 w-72 rounded-full border border-black/10" />
-      <div className="absolute -bottom-20 right-0 h-72 w-72 rounded-full border border-black/10" />
 
       <div className="relative min-h-screen grid place-items-center p-4 sm:p-6">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-8 items-center">
