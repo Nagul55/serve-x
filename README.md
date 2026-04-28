@@ -44,7 +44,7 @@ Field Officer / Reporter
 | WhatsApp Intake | Meta WhatsApp Cloud API + Survex module |
 | AI Engine | GeminiAI / NVIDIA DeepSeek integration hooks |
 | Maps / Geo | Leaflet + OpenStreetMap |
-| Hosting Ready | Vercel/Netlify frontend + Node host backend |
+| Hosting Ready | Vercel frontend + Render backend |
 
 ## Project Structure
 ```text
