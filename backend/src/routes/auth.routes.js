@@ -2,25 +2,33 @@ import { Router } from 'express';
 import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
-import { OtpCode } from '../models/otpCode.model.js';
 import { Session } from '../models/session.model.js';
-import { User } from '../models/user.model.js';
+import { User, hashUserPassword } from '../models/user.model.js';
 import {
   buildAccessJwt,
   buildRefreshJwt,
-  generateOtp,
   hashToken,
-  hashOtp,
   isValidEmail,
   normalizeEmail,
   resolveClientIp,
   verifyRefreshJwt,
 } from '../utils/auth.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
-import { sendOtpEmail, smtpConfigured } from '../services/email.service.js';
 
 const router = Router();
 const VALID_ROLES = new Set(['coordinator', 'field_officer']);
+const DEMO_LOGIN_CREDENTIALS = {
+  coordinator: {
+    email: 'coordinator@gmail.com',
+    password: 'coordinator@123',
+    name: 'ServeX Coordinator',
+  },
+  field_officer: {
+    email: 'fieldofficer@gmail.com',
+    password: 'fieldofficer@gmail.com',
+    name: 'ServeX Field Officer',
+  },
+};
 
 function decodeExp(token) {
   const decoded = jwt.decode(token);
@@ -100,7 +108,7 @@ function sanitizeUser(user, session) {
     phone: user.phone || '',
     role: user.role,
     assignedCoordinatorId: user.assigned_coordinator_id?.toString() || null,
-    otp_verified: Boolean(session?.field_officer_verified),
+    field_officer_verified: Boolean(session?.field_officer_verified),
   };
 }
 
@@ -122,156 +130,80 @@ async function resolveLoginUser(email, role) {
   return { user };
 }
 
-async function sendLoginOtp(req, res, next) {
-  try {
-    const email = normalizeEmail(req.body?.email || '');
-    const role = String(req.body?.role || '').trim().toLowerCase();
+async function ensureDemoLoginUsers() {
+  const coordinatorCredential = DEMO_LOGIN_CREDENTIALS.coordinator;
+  const fieldOfficerCredential = DEMO_LOGIN_CREDENTIALS.field_officer;
 
-    if (!isValidEmail(email) || !VALID_ROLES.has(role)) {
-      return res.status(400).json({ error: 'email and valid role are required' });
-    }
-
-    const { user, error } = await resolveLoginUser(email, role);
-    if (error) {
-      return res.status(error.status).json({ error: error.message });
-    }
-
-    const ip = resolveClientIp(req);
-    const userAgent = String(req.headers['user-agent'] || '');
-    const windowStart = new Date(Date.now() - env.otpRateLimitWindowMinutes * 60 * 1000);
-
-    const [emailCount, ipCount] = await Promise.all([
-      OtpCode.countDocuments({ email, role, created_date: { $gte: windowStart } }),
-      OtpCode.countDocuments({ ip, created_date: { $gte: windowStart } }),
-    ]);
-
-    if (emailCount >= env.otpMaxPerEmailWindow) {
-      return res.status(429).json({
-        error: `Too many OTP requests for this email. Try again in ${env.otpRateLimitWindowMinutes} minutes.`,
-      });
-    }
-
-    if (ipCount >= env.otpMaxPerIpWindow) {
-      return res.status(429).json({
-        error: `Too many OTP requests from this IP. Try again in ${env.otpRateLimitWindowMinutes} minutes.`,
-      });
-    }
-
-    await OtpCode.updateMany(
-      { email, role, user_id: user.id, used_at: null },
-      { used_at: new Date() }
-    );
-
-    const otp = generateOtp();
-    const otpHash = hashOtp(email, otp);
-    const expiresAt = new Date(Date.now() + env.otpExpiresMinutes * 60 * 1000);
-
-    await OtpCode.create({
-      email,
-      user_id: user.id,
-      role,
-      otp_hash: otpHash,
-      expires_at: expiresAt,
-      ip,
-      user_agent: userAgent,
+  let coordinator = await User.findOne({ email: coordinatorCredential.email });
+  if (!coordinator) {
+    coordinator = await User.create({
+      name: coordinatorCredential.name,
+      email: coordinatorCredential.email,
+      role: 'coordinator',
+      password_hash: await hashUserPassword(coordinatorCredential.password),
+      is_active: true,
     });
-
-    let deliveryMethod = 'smtp';
-    try {
-      await sendOtpEmail({
-        toEmail: email,
-        otp,
-        expiresInMinutes: env.otpExpiresMinutes,
-      });
-    } catch (error2) {
-      deliveryMethod = 'development-fallback';
-      console.warn('Failed to send OTP via SMTP:', error2.message);
-
-      if (env.nodeEnv === 'production') {
-        return res.status(503).json({ error: 'OTP delivery service unavailable' });
-      }
-
-      if (!env.exposeDevOtp) {
-        return res.status(503).json({
-          error: 'OTP delivery failed. Configure SMTP or enable EXPOSE_DEV_OTP in development.',
-        });
-      }
+  } else {
+    coordinator.name = coordinatorCredential.name;
+    coordinator.role = 'coordinator';
+    coordinator.assigned_coordinator_id = null;
+    coordinator.is_active = true;
+    const coordinatorPasswordValid = await coordinator.verifyPassword(coordinatorCredential.password);
+    if (!coordinatorPasswordValid) {
+      coordinator.password_hash = await hashUserPassword(coordinatorCredential.password);
     }
+    await coordinator.save();
+  }
 
-    if (deliveryMethod !== 'smtp') {
-      console.log(`[ServeX OTP] ${email}: ${otp}`);
+  let fieldOfficer = await User.findOne({ email: fieldOfficerCredential.email });
+  if (!fieldOfficer) {
+    fieldOfficer = await User.create({
+      name: fieldOfficerCredential.name,
+      email: fieldOfficerCredential.email,
+      role: 'field_officer',
+      assigned_coordinator_id: coordinator._id,
+      password_hash: await hashUserPassword(fieldOfficerCredential.password),
+      is_active: true,
+    });
+  } else {
+    fieldOfficer.name = fieldOfficerCredential.name;
+    fieldOfficer.role = 'field_officer';
+    fieldOfficer.assigned_coordinator_id = coordinator._id;
+    fieldOfficer.is_active = true;
+    const fieldOfficerPasswordValid = await fieldOfficer.verifyPassword(fieldOfficerCredential.password);
+    if (!fieldOfficerPasswordValid) {
+      fieldOfficer.password_hash = await hashUserPassword(fieldOfficerCredential.password);
     }
-
-    const payload = {
-      success: true,
-      message: 'OTP issued successfully',
-      expires_in_minutes: env.otpExpiresMinutes,
-      delivery_method: deliveryMethod,
-      requires_otp: true,
-      role,
-    };
-
-    if (env.nodeEnv !== 'production' && env.exposeDevOtp) {
-      payload.dev_otp = otp;
-    }
-
-    if (!smtpConfigured()) {
-      payload.smtp_configured = false;
-    }
-
-    return res.json(payload);
-  } catch (error) {
-    return next(error);
+    await fieldOfficer.save();
   }
 }
 
-router.post('/login', sendLoginOtp);
-
-router.post('/send-otp', sendLoginOtp);
-
-router.post('/verify-otp', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   try {
     const email = normalizeEmail(req.body?.email || '');
     const role = String(req.body?.role || '').trim().toLowerCase();
-    const otp = String(req.body?.otp || '').trim();
+    const password = String(req.body?.password || '');
 
-    if (!isValidEmail(email) || !VALID_ROLES.has(role) || !/^\d{4,8}$/.test(otp)) {
-      return res.status(400).json({ error: 'email, role, and valid OTP are required' });
+    if (!isValidEmail(email) || !VALID_ROLES.has(role) || !password.trim()) {
+      return res.status(400).json({ error: 'email, role, and password are required' });
     }
+
+    const expected = DEMO_LOGIN_CREDENTIALS[role];
+    if (!expected || email !== expected.email) {
+      return res.status(401).json({ error: 'Use the provided demo email for the selected role' });
+    }
+
+    await ensureDemoLoginUsers();
 
     const { user, error } = await resolveLoginUser(email, role);
     if (error) {
       return res.status(error.status).json({ error: error.message });
     }
 
-    const otpRecord = await OtpCode.findOne({
-      email,
-      role,
-      user_id: user.id,
-      used_at: null,
-    }).sort({ created_date: -1 });
-
-    if (!otpRecord) {
-      return res.status(400).json({ error: 'No OTP request found for this user' });
+    const passwordMatches = await user.verifyPassword(password);
+    if (!passwordMatches) {
+      return res.status(401).json({ error: 'Invalid password' });
     }
-
-    if (otpRecord.expires_at <= new Date()) {
-      return res.status(400).json({ error: 'OTP has expired' });
-    }
-
-    if (otpRecord.attempts >= env.otpMaxAttempts) {
-      return res.status(429).json({ error: 'Too many invalid attempts. Request a new OTP.' });
-    }
-
-    const incomingHash = hashOtp(email, otp);
-    if (incomingHash !== otpRecord.otp_hash) {
-      otpRecord.attempts += 1;
-      await otpRecord.save();
-      return res.status(401).json({ error: 'Invalid OTP' });
-    }
-
-    otpRecord.used_at = new Date();
-    await otpRecord.save();
 
     const session = new Session({
       user_id: user.id,
@@ -304,7 +236,6 @@ router.post('/verify-otp', async (req, res, next) => {
       refresh_token: refreshToken,
       user: sanitizeUser(user, session),
       session: sanitizeSession(session, session.id),
-      requires_otp: false,
     });
   } catch (error) {
     return next(error);
@@ -389,7 +320,7 @@ router.get('/me', requireAuth, async (req, res) => {
     phone: req.currentUser.phone || '',
     role: req.currentUser.role,
     assignedCoordinatorId: req.currentUser.assigned_coordinator_id?.toString() || null,
-    otp_verified: req.currentUser.role === 'field_officer'
+    field_officer_verified: req.currentUser.role === 'field_officer'
       ? Boolean(req.authSession?.field_officer_verified)
       : true,
     last_login_at: req.currentUser.last_login_at,

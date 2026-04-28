@@ -10,21 +10,6 @@ export function isValidEmail(value = '') {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value).trim());
 }
 
-export function generateOtp(length = env.otpLength) {
-  const safeLength = Number.isFinite(length) ? Math.max(4, Math.min(8, length)) : 6;
-  const max = 10 ** safeLength;
-  const min = 10 ** (safeLength - 1);
-  const value = crypto.randomInt(min, max);
-  return String(value);
-}
-
-export function hashOtp(email, otp) {
-  return crypto
-    .createHash('sha256')
-    .update(`${normalizeEmail(email)}:${otp}:${env.otpPepper}`)
-    .digest('hex');
-}
-
 export function hashToken(value = '') {
   return crypto
     .createHash('sha256')

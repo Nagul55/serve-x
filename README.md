@@ -32,7 +32,7 @@ Field Officer / Reporter
 - **Coordinator Workbench:** Filter, search, inspect, and manage community needs with clear status lifecycle.
 - **Volunteer Dispatch:** Assign volunteers, track dispatch status, and keep the operational context tied to each need.
 - **In-App Notifications:** Bell notification center for key operational events, including new survey registration.
-- **Secure Access:** OTP-based auth with coordinator/field-officer roles and session controls.
+- **Secure Access:** Role-based email + password auth with coordinator/field-officer sessions.
 
 ## Tech Stack
 | Layer | Technology |
@@ -40,7 +40,7 @@ Field Officer / Reporter
 | Frontend | React + Vite + Tailwind CSS |
 | Backend | Node.js + Express |
 | Database | MongoDB + Mongoose |
-| Authentication | JWT + OTP (Nodemailer) |
+| Authentication | JWT + Email/Password |
 | WhatsApp Intake | Meta WhatsApp Cloud API + Survex module |
 | AI Engine | OpenAI / NVIDIA DeepSeek integration hooks |
 | Maps / Geo | Leaflet + OpenStreetMap |
@@ -84,7 +84,7 @@ npm install
 copy .env.example .env
 ```
 
-3. Fill required values in `.env` (`MONGODB_URI`, JWT secrets, OTP mail settings, API keys).
+3. Fill required values in `.env` (`MONGODB_URI`, JWT secrets, API keys).
 ```bash
 notepad .env
 ```
@@ -112,22 +112,6 @@ JWT_SECRET=
 JWT_EXPIRES_IN=15m
 REFRESH_TOKEN_SECRET=
 REFRESH_TOKEN_EXPIRES_IN=30d
-
-OTP_PEPPER=
-OTP_EXPIRES_MINUTES=10
-OTP_LENGTH=6
-OTP_MAX_ATTEMPTS=5
-OTP_RATE_LIMIT_WINDOW_MINUTES=15
-OTP_MAX_PER_EMAIL_WINDOW=5
-OTP_MAX_PER_IP_WINDOW=20
-EXPOSE_DEV_OTP=true
-
-SMTP_HOST=
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=
-SMTP_PASS=
-SMTP_FROM=ServeX <no-reply@servex.local>
 
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini

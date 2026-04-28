@@ -23,7 +23,7 @@ const AuthenticatedApp = () => {
   const userRole = user?.role || null;
   const isCoordinator = userRole === 'coordinator';
   const isFieldOfficer = userRole === 'field_officer';
-  const isFieldOfficerVerified = Boolean(user?.otp_verified);
+  const isFieldOfficerVerified = Boolean(user?.field_officer_verified);
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return <ServeXLoader isLoading />;

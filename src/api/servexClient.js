@@ -2,7 +2,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const ACCESS_TOKEN_KEY = 'servex_access_token';
 const REFRESH_TOKEN_KEY = 'servex_refresh_token';
 const AUTH_USER_KEY = 'servex_auth_user';
-const AUTH_FLOW_KEY = 'servex_auth_flow';
 let refreshInFlight = null;
 
 function sleep(ms) {
@@ -81,7 +80,6 @@ function clearAuthSession() {
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
   window.localStorage.removeItem(AUTH_USER_KEY);
-  window.localStorage.removeItem(AUTH_FLOW_KEY);
 }
 
 function getStoredUser() {
@@ -93,26 +91,6 @@ function getStoredUser() {
   } catch {
     return null;
   }
-}
-
-function getStoredAuthFlow() {
-  if (typeof window === 'undefined') return null;
-  const raw = window.localStorage.getItem(AUTH_FLOW_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
-
-function setStoredAuthFlow(value) {
-  if (typeof window === 'undefined') return;
-  if (!value) {
-    window.localStorage.removeItem(AUTH_FLOW_KEY);
-    return;
-  }
-  window.localStorage.setItem(AUTH_FLOW_KEY, JSON.stringify(value));
 }
 
 async function refreshSession() {
@@ -211,7 +189,7 @@ async function request(path, options = {}) {
     if (
       response.status === 401 &&
       path.startsWith('/auth/') &&
-      !['/auth/login', '/auth/send-otp', '/auth/verify-otp'].includes(path)
+      !['/auth/login'].includes(path)
     ) {
       clearAuthSession();
     }
@@ -271,39 +249,18 @@ export const servexApi = {
     markAllRead: () => request('/notifications/read-all', { method: 'POST' }),
   },
   auth: {
-    sendOtp: async ({ email, role }) => {
-      const result = await retryOnNetworkWarmup(() => request('/auth/send-otp', {
+    login: async ({ email, role, password }) => {
+      const result = await retryOnNetworkWarmup(() => request('/auth/login', {
         method: 'POST',
         skipAuth: true,
         skipRefresh: true,
-        body: JSON.stringify({ email, role }),
+        body: JSON.stringify({ email, role, password }),
       }));
-
-      setStoredAuthFlow({
-        role,
-        email,
-        requiresOtp: true,
-      });
-
-      return result;
-    },
-    verifyOtp: async ({ email, role, otp }) => {
-      const result = await request('/auth/verify-otp', {
-        method: 'POST',
-        skipAuth: true,
-        skipRefresh: true,
-        body: JSON.stringify({ email, role, otp }),
-      });
 
       setAuthSession({
         accessToken: result?.access_token,
         refreshToken: result?.refresh_token,
         user: result?.user,
-      });
-
-      setStoredAuthFlow({
-        role: result?.user?.role || 'field_officer',
-        requiresOtp: false,
       });
 
       return result;
@@ -319,11 +276,6 @@ export const servexApi = {
       const me = await request('/auth/me');
       if (me) {
         setAuthSession({ accessToken: token, user: me });
-        setStoredAuthFlow({
-          role: me.role,
-          email: me.email,
-          requiresOtp: false,
-        });
       }
       return me;
     },
@@ -348,7 +300,6 @@ export const servexApi = {
       window.location.href = '/login';
     },
     getStoredUser,
-    getStoredAuthFlow,
     hasSession: () => Boolean(getAccessToken() && getRefreshToken()),
   },
 };

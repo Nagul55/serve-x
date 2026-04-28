@@ -1,9 +1,8 @@
 import { CommunityNeed } from '../models/communityNeed.model.js';
 import { Dispatch } from '../models/dispatch.model.js';
 import { FieldReport } from '../models/fieldReport.model.js';
-import { OtpCode } from '../models/otpCode.model.js';
 import { Session } from '../models/session.model.js';
-import { User } from '../models/user.model.js';
+import { User, hashUserPassword } from '../models/user.model.js';
 import { Volunteer } from '../models/volunteer.model.js';
 import { normalizeEmail, isValidEmail } from '../utils/auth.js';
 import { SurvexConversation } from '../modules/survex/models/survexConversation.model.js';
@@ -13,17 +12,22 @@ import { normalizeWhatsAppPhone, sanitizeText } from '../modules/survex/utils/sa
 
 const DEFAULT_IDENTITIES = {
   coordinator: {
-    name: 'Nagul',
-    email: 'nagulaadhi08@gmail.com',
+    name: 'ServeX Coordinator',
+    email: 'coordinator@gmail.com',
   },
   fieldOfficer: {
-    name: 'Saran',
-    email: 'sumathinagul08@gmail.com',
+    name: 'ServeX Field Officer',
+    email: 'fieldofficer@gmail.com',
   },
   volunteer: {
     name: 'Arun',
     email: 'arunnagul2025@gmail.com',
   },
+};
+
+const DEFAULT_MAIN_LOGIN_PASSWORDS = {
+  coordinator: 'coordinator@123',
+  fieldOfficer: 'fieldofficer@gmail.com',
 };
 
 function parseFirstSurvexSeedOfficerPhone() {
@@ -98,6 +102,16 @@ function resolveConfig(overrides = {}) {
   const survexPassword = String(
     overrides.survexPassword || process.env.SERVEX_RESET_SURVEX_PASSWORD || 'ServeX@12345'
   );
+  const mainCoordinatorPassword = String(
+    overrides.mainCoordinatorPassword
+    || process.env.SERVEX_RESET_COORDINATOR_PASSWORD
+    || DEFAULT_MAIN_LOGIN_PASSWORDS.coordinator
+  ).trim();
+  const mainFieldOfficerPassword = String(
+    overrides.mainFieldOfficerPassword
+    || process.env.SERVEX_RESET_FIELD_OFFICER_PASSWORD
+    || DEFAULT_MAIN_LOGIN_PASSWORDS.fieldOfficer
+  ).trim();
 
   return {
     coordinatorName,
@@ -110,13 +124,14 @@ function resolveConfig(overrides = {}) {
     volunteerEmail,
     volunteerPhone,
     survexPassword,
+    mainCoordinatorPassword,
+    mainFieldOfficerPassword,
   };
 }
 
 async function purgeData() {
   await Promise.all([
     Session.deleteMany({}),
-    OtpCode.deleteMany({}),
     User.deleteMany({}),
     CommunityNeed.deleteMany({}),
     Volunteer.deleteMany({}),
@@ -129,19 +144,22 @@ async function purgeData() {
 }
 
 async function seedMainServeXUsers(config) {
+  const coordinatorPasswordHash = await hashUserPassword(config.mainCoordinatorPassword);
+  const fieldOfficerPasswordHash = await hashUserPassword(config.mainFieldOfficerPassword);
+
   let coordinator = await User.findOne({ email: config.coordinatorEmail });
   if (!coordinator) {
     coordinator = await User.create({
       name: config.coordinatorName,
       email: config.coordinatorEmail,
       role: 'coordinator',
-      password_hash: '',
+      password_hash: coordinatorPasswordHash,
       is_active: true,
     });
   } else {
     coordinator.name = config.coordinatorName;
     coordinator.role = 'coordinator';
-    coordinator.password_hash = '';
+    coordinator.password_hash = coordinatorPasswordHash;
     coordinator.is_active = true;
     await coordinator.save();
   }
@@ -153,14 +171,14 @@ async function seedMainServeXUsers(config) {
       email: config.fieldOfficerEmail,
       role: 'field_officer',
       assigned_coordinator_id: coordinator._id,
-      password_hash: '',
+      password_hash: fieldOfficerPasswordHash,
       is_active: true,
     });
   } else {
     fieldOfficer.name = config.fieldOfficerName;
     fieldOfficer.role = 'field_officer';
     fieldOfficer.assigned_coordinator_id = coordinator._id;
-    fieldOfficer.password_hash = '';
+    fieldOfficer.password_hash = fieldOfficerPasswordHash;
     fieldOfficer.is_active = true;
     await fieldOfficer.save();
   }
