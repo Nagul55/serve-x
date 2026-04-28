@@ -42,7 +42,7 @@ Field Officer / Reporter
 | Database | MongoDB + Mongoose |
 | Authentication | JWT + Email/Password |
 | WhatsApp Intake | Meta WhatsApp Cloud API + Survex module |
-| AI Engine | GeminiAI / NVIDIA DeepSeek integration hooks |
+| AI Engine | NVIDIA DeepSeek (default) + Google Gemini (configurable) |
 | Maps / Geo | Leaflet + OpenStreetMap |
 | Hosting Ready | Vercel frontend + Render backend |
 
@@ -115,9 +115,12 @@ REFRESH_TOKEN_EXPIRES_IN=30d
 
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
+AI_PROVIDER=nvidia
 NVIDIA_API_KEY=
 NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1
 NVIDIA_MODEL=deepseek-ai/deepseek-v4-flash
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-2.0-flash
 
 SURVEX_WHATSAPP_PROVIDER=meta
 META_WHATSAPP_BUSINESS_ACCOUNT_ID=
